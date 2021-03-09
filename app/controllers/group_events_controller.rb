@@ -10,6 +10,7 @@ class GroupEventsController < ApplicationController
     
     # POST /group_events
     def create
+        computeEnd
         @group_event = GroupEvent.create!(group_event_params)
         json_response(@group_event, :created)
     end
@@ -21,6 +22,7 @@ class GroupEventsController < ApplicationController
     
     # PUT /group_events/:id
     def update
+        computeEnd
         @group_event.update(group_event_params)
         head :no_content
     end
@@ -55,6 +57,17 @@ class GroupEventsController < ApplicationController
       else
         valid = true
       end
+    end
+
+    def computeEnd
+        if @group_event.duration != nil && @group_event.ends != nil && @group_event.ends != @group_event.begins + @group_event.duration
+            throw "non deterministic input"
+        end
+        elseif @group_event.begins != nil && @group_event.duration != nil
+            @group_event.ends = @group_event.begins + @group_event.duration
+        elseif @group_event.ending != nil && @group_event.begins != nil
+            @group_event.duration = @group_event.ends - @group_event.begins 
+        end
     end
 
 end

@@ -6,6 +6,7 @@ class CreateGroupEvents < ActiveRecord::Migration[6.1]
       t.string :location
       t.date :begins
       t.date :ends
+      t.bigint :duration
       t.boolean :published
       t.datetime :deleted
 
